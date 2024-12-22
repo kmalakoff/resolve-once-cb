@@ -1,0 +1,1 @@
+ignores: ["resolve-once-cb", "depcheck", "ts-dev-stack", "@types/*", "@biomejs/*"]
