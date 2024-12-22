@@ -1,0 +1,50 @@
+{
+  "name": "resolve-once-cb",
+  "version": "0.0.0",
+  "description": "Resolves a callback only once and memoizes the result",
+  "keywords": [
+    "callback",
+    "resolve",
+    "once",
+    "memoize",
+    "resolve-once-cb"
+  ],
+  "homepage": "https://github.com/kmalakoff/resolve-once-cb",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:kmalakoff/resolve-once-cb.git"
+  },
+  "license": "MIT",
+  "author": "Kevin Malakoff <kmalakoff@gmail.com> (https://github.com/kmalakoff)",
+  "main": "dist/cjs/index.js",
+  "types": "dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsds build",
+    "deploy": "tsds deploy",
+    "format": "biome check --write --unsafe src/ test/",
+    "test": "tsds test:node --no-timeouts",
+    "test:engines": "nvu engines npm test",
+    "version": "tsds version"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.10.2",
+    "depcheck": "^1.4.7",
+    "queue-cb": "^1.4.4",
+    "ts-dev-stack": "^1.4.5"
+  },
+  "packageManager": "npm@11.0.0+sha512.11dff29565d2297c74e7c594a9762581bde969f0aa5cbe6f5b3644bf008a16c065ece61094d9ffbb81125be38df8e1ba43eb8244b3d30c61eb797e9a2440e3ec",
+  "engines": {
+    "node": ">=0.8"
+  },
+  "tsds": {
+    "source": "src/index.mjs",
+    "targets": [
+      "cjs"
+    ]
+  }
+}
