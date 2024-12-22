@@ -26,12 +26,9 @@ export default function resolveOnce(fn) {
   }
 
   return (callback) => {
-    if (state === RESOLVED_SUCCESS) return Promise.resolve(result);
-    if (state === RESOLVED_ERROR) return Promise.reject(result);
-
+    if (state === RESOLVED_SUCCESS) return callback(null, result);
+    if (state === RESOLVED_ERROR) return callback(result);
+    waiting.push(callback);
     resolveResult(callback);
-    return function collect(callback) {
-      waiting.push(callback);
-    };
   };
 }

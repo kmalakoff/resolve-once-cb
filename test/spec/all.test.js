@@ -1,6 +1,5 @@
 const assert = require('assert');
 const Queue = require('queue-cb');
-const _asap = require('asap');
 
 const resolveOnce = require('resolve-once-cb');
 
@@ -14,7 +13,7 @@ describe('resolve-once-cb', () => {
     function collect(cb) {
       resolver((err, value) => {
         err ? errors.push(err) : results.push(value);
-        cb(err, value);
+        cb();
       });
     }
 
@@ -40,34 +39,36 @@ describe('resolve-once-cb', () => {
     });
   });
 
-  it.skip('handle failure', (callback) => {
+  it('handle failure', (callback) => {
     let counter = 0;
-    const resolver = resolveOnce(() =>
-      Promise.resolve().then(() => {
-        ++counter;
-        return Promise.reject(new Error('Failed'));
-      })
-    );
+    const resolver = resolveOnce((cb) => {
+      ++counter;
+      cb(new Error('Failed'));
+    });
 
-    function wrapError() {
-      return new Promise((resolve, _reject) => {
-        resolver().catch((err) => {
-          assert.equal(counter, 1);
-          assert.equal(err.message, 'Failed');
-          resolve(counter);
-        });
+    const errors = [];
+    const results = [];
+    function collect(cb) {
+      resolver((err, value) => {
+        err ? errors.push(err) : results.push(value);
+        cb();
       });
     }
 
-    Promise.all([wrapError(), wrapError(), wrapError()]).then((results) => {
-      assert.equal(results.length, 3);
-
-      results.forEach((result) => {
-        assert.equal(result, 1);
+    const queue = new Queue();
+    queue.defer(collect);
+    queue.defer(collect);
+    queue.defer(collect);
+    queue.await((err) => {
+      assert.ok(!err);
+      assert.ok(errors.length === 3);
+      assert.equal(results.length, 0);
+      errors.forEach((err) => {
+        assert.equal(err.message, 'Failed');
       });
       assert.equal(counter, 1);
 
-      resolver().catch((err) => {
+      resolver((err) => {
         assert.equal(counter, 1);
         assert.equal(err.message, 'Failed');
         callback();

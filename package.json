@@ -33,7 +33,6 @@
     "@biomejs/biome": "^1.9.4",
     "@types/mocha": "^10.0.10",
     "@types/node": "^22.10.2",
-    "asap": "^2.0.6",
     "depcheck": "^1.4.7",
     "queue-cb": "^1.4.4",
     "ts-dev-stack": "^1.4.5"
