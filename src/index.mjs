@@ -12,7 +12,8 @@ export default function resolveOnce(fn) {
     if (state === RESOLVING) return;
     state = RESOLVING;
 
-    fn((err, value) => {
+    function callback(err, value) {
+      if (state !== RESOLVING) return;
       if (err) {
         state = RESOLVED_ERROR;
         result = err;
@@ -22,7 +23,13 @@ export default function resolveOnce(fn) {
         result = value;
         while (waiting.length) waiting.pop()(null, result);
       }
-    });
+    }
+
+    try {
+      fn(callback);
+    } catch (err) {
+      callback(err);
+    }
   }
 
   return (callback) => {
