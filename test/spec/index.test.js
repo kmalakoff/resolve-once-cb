@@ -75,4 +75,18 @@ describe('resolve-once-cb', () => {
       });
     });
   });
+
+  describe('errors', () => {
+    it('missing callback', (done) => {
+      let counter = 0;
+      const resolver = resolveOnce((cb) => cb(null, ++counter));
+      try {
+        resolver();
+        assert.ok(false, 'should not get here');
+      } catch (err) {
+        assert.ok(err.message.indexOf('missing callback') >= 0);
+        done();
+      }
+    });
+  });
 });
