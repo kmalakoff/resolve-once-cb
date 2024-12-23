@@ -33,6 +33,7 @@ export default function resolveOnce(fn) {
   }
 
   return (callback) => {
+    if (typeof callback !== 'function') throw new Error('resolve-call-once missing callback');
     if (state === RESOLVED_SUCCESS) return callback(null, result);
     if (state === RESOLVED_ERROR) return callback(result);
     waiting.push(callback);
