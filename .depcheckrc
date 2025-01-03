@@ -1,1 +1,1 @@
-ignores: ["resolve-once-cb", "depcheck", "ts-dev-stack", "@types/*", "@biomejs/*"]
+ignores: ["resolve-once-cb", "@types/*", "@biomejs/*"]
