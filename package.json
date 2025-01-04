@@ -23,6 +23,7 @@
   ],
   "scripts": {
     "build": "tsds build",
+    "clean": "node -e \"const dir = require('path').join(require('homedir-polyfill')(), '.im'); try {require('fs').rmdirSync(dir, {recursive: true})} catch(err) {}\"",
     "deploy": "tsds deploy",
     "docs": "tsds docs",
     "format": "biome check --write --unsafe src/ test/",
@@ -34,7 +35,7 @@
     "@biomejs/biome": "^1.9.4",
     "@types/mocha": "^10.0.10",
     "@types/node": "^22.10.5",
-    "queue-cb": "^1.4.4"
+    "queue-cb": "^1.4.9"
   },
   "engines": {
     "node": ">=0.8"
