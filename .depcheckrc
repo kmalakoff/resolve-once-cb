@@ -1,1 +1,1 @@
-ignores: ["@types/*", "resolve-once-cb", "@biomejs/*"]
+ignores: ["resolve-once-cb"]

@@ -29,10 +29,9 @@
     "version": "tsds version"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
-    "@types/mocha": "^10.0.10",
-    "@types/node": "^22.10.6",
-    "queue-cb": "^1.4.11"
+    "@types/mocha": "*",
+    "@types/node": "*",
+    "queue-cb": "*"
   },
   "engines": {
     "node": ">=0.8"
