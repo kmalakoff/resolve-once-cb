@@ -5,14 +5,14 @@ const RESOLVED_ERROR = 3;
 
 export default function resolveOnce(fn) {
   let state = UNRESOLVED;
-  let result;
+  let result: unknown;
   const waiting = [];
 
   function resolveResult() {
     if (state === RESOLVING) return;
     state = RESOLVING;
 
-    function callback(err, value) {
+    function callback(err?: Error, value?) {
       if (state !== RESOLVING) return;
       if (err) {
         state = RESOLVED_ERROR;
@@ -37,6 +37,6 @@ export default function resolveOnce(fn) {
     if (state === RESOLVED_SUCCESS) return callback(null, result);
     if (state === RESOLVED_ERROR) return callback(result);
     waiting.push(callback);
-    resolveResult(callback);
+    resolveResult();
   };
 }
