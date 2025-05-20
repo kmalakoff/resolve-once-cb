@@ -1,7 +1,8 @@
-const assert = require('assert');
-const Queue = require('queue-cb');
+import assert from 'assert';
+import Queue from 'queue-cb';
 
-const resolveOnce = require('resolve-once-cb');
+// @ts-ignore
+import resolveOnce from 'resolve-once-cb';
 
 describe('resolve-once-cb', () => {
   it('handle success', (callback) => {
