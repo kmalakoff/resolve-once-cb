@@ -3,20 +3,23 @@ const RESOLVING = 1;
 const RESOLVED_SUCCESS = 2;
 const RESOLVED_ERROR = 3;
 
-export default function resolveOnce(fn) {
+export type Callback<T> = (error?: Error, result?: T) => undefined;
+export type Resolver<T> = (callback: Callback<T>) => undefined;
+
+export default function resolveOnce<T>(fn: Resolver<T>): Resolver<T> {
   let state = UNRESOLVED;
-  let result: unknown;
+  let result: T | Error;
   const waiting = [];
 
   function resolveResult() {
     if (state === RESOLVING) return;
     state = RESOLVING;
 
-    function callback(err?: Error, value?) {
+    function callback(error?: Error, value?: T): undefined {
       if (state !== RESOLVING) return;
-      if (err) {
+      if (error) {
         state = RESOLVED_ERROR;
-        result = err;
+        result = error;
         while (waiting.length) waiting.pop()(result);
       } else {
         state = RESOLVED_SUCCESS;
@@ -32,10 +35,10 @@ export default function resolveOnce(fn) {
     }
   }
 
-  return (callback) => {
+  return (callback: Callback<T>): undefined => {
     if (typeof callback !== 'function') throw new Error('resolve-once-cb missing callback');
-    if (state === RESOLVED_SUCCESS) return callback(null, result);
-    if (state === RESOLVED_ERROR) return callback(result);
+    if (state === RESOLVED_SUCCESS) return callback(null, result as T);
+    if (state === RESOLVED_ERROR) return callback(result as Error);
     waiting.push(callback);
     resolveResult();
   };
