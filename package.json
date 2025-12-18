@@ -1,6 +1,6 @@
 {
   "name": "resolve-once-cb",
-  "version": "1.0.8",
+  "version": "1.1.0",
   "description": "Resolves a callback only once and memoizes the result",
   "keywords": [
     "callback",
