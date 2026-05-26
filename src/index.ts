@@ -9,7 +9,7 @@ export type Resolver<T> = (callback: Callback<T>) => void;
 export default function resolveOnce<T>(fn: Resolver<T>): Resolver<T> {
   let state = UNRESOLVED;
   let result: T | Error;
-  const waiting = [];
+  const waiting: Callback<T>[] = [];
 
   function resolveResult() {
     if (state === RESOLVING) return;
@@ -20,24 +20,24 @@ export default function resolveOnce<T>(fn: Resolver<T>): Resolver<T> {
       if (error) {
         state = RESOLVED_ERROR;
         result = error;
-        while (waiting.length) waiting.pop()(result);
+        while (waiting.length) waiting.pop()?.(result as Error);
       } else {
         state = RESOLVED_SUCCESS;
-        result = value;
-        while (waiting.length) waiting.pop()(null, result);
+        result = value as T;
+        while (waiting.length) waiting.pop()?.(undefined, result as T);
       }
     }
 
     try {
       fn(callback);
     } catch (err) {
-      callback(err);
+      callback(err instanceof Error ? err : new Error(String(err)));
     }
   }
 
   return (callback: Callback<T>): void => {
     if (typeof callback !== 'function') throw new Error('resolve-once-cb missing callback');
-    if (state === RESOLVED_SUCCESS) return callback(null, result as T);
+    if (state === RESOLVED_SUCCESS) return callback(undefined, result as T);
     if (state === RESOLVED_ERROR) return callback(result as Error);
     waiting.push(callback);
     resolveResult();
