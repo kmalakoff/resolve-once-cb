@@ -6,13 +6,13 @@ import resolveOnce, { type Callback, type Resolver } from 'resolve-once-cb';
 describe('resolve-once-cb', () => {
   it('handle success', (callback) => {
     let counter = 0;
-    const resolver = resolveOnce<number>((cb) => cb(null, ++counter)) as Resolver<number>;
+    const resolver = resolveOnce<number>((cb) => cb(undefined, ++counter)) as Resolver<number>;
 
-    const errors = [];
+    const errors: (Error | undefined)[] = [];
     const results: number[] = [];
-    function collect(cb) {
+    function collect(cb: (error?: Error) => void) {
       resolver((err, value) => {
-        err ? errors.push(err) : results.push(value);
+        err ? errors.push(err) : results.push(value as number);
         cb();
       });
     }
@@ -46,9 +46,9 @@ describe('resolve-once-cb', () => {
       cb(new Error('Failed'));
     });
 
-    const errors = [];
-    const results = [];
-    function collect(cb) {
+    const errors: (Error | undefined)[] = [];
+    const results: unknown[] = [];
+    function collect(cb: (error?: Error) => void) {
       resolver((err, value) => {
         err ? errors.push(err) : results.push(value);
         cb();
@@ -64,13 +64,13 @@ describe('resolve-once-cb', () => {
       assert.ok(errors.length === 3);
       assert.equal(results.length, 0);
       errors.forEach((err) => {
-        assert.equal(err.message, 'Failed');
+        assert.equal((err as Error).message, 'Failed');
       });
       assert.equal(counter, 1);
 
       resolver((err) => {
         assert.equal(counter, 1);
-        assert.equal(err.message, 'Failed');
+        assert.equal((err as Error).message, 'Failed');
         callback();
       });
     });
@@ -79,12 +79,12 @@ describe('resolve-once-cb', () => {
   describe('errors', () => {
     it('missing callback', (done) => {
       let counter = 0;
-      const resolver = resolveOnce<number>((cb) => cb(null, ++counter));
+      const resolver = resolveOnce<number>((cb) => cb(undefined, ++counter));
       try {
-        resolver(undefined as Callback<number>);
+        resolver(undefined as unknown as Callback<number>);
         assert.ok(false, 'should not get here');
-      } catch (err) {
-        assert.ok(err.message.indexOf('missing callback') >= 0);
+      } catch (err: unknown) {
+        assert.ok((err as Error).message.indexOf('missing callback') >= 0);
         done();
       }
     });
