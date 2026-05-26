@@ -8,9 +8,9 @@ describe('resolve-once-cb', () => {
     let counter = 0;
     const resolver = resolveOnce<number>((cb) => cb(undefined, ++counter)) as Resolver<number>;
 
-    const errors: (Error | undefined)[] = [];
+    const errors: (Error | null)[] = [];
     const results: number[] = [];
-    function collect(cb: (error?: Error) => void) {
+    function collect(cb: (error?: Error | null) => void) {
       resolver((err, value) => {
         err ? errors.push(err) : results.push(value as number);
         cb();
@@ -46,9 +46,9 @@ describe('resolve-once-cb', () => {
       cb(new Error('Failed'));
     });
 
-    const errors: (Error | undefined)[] = [];
+    const errors: (Error | null)[] = [];
     const results: unknown[] = [];
-    function collect(cb: (error?: Error) => void) {
+    function collect(cb: (error?: Error | null) => void) {
       resolver((err, value) => {
         err ? errors.push(err) : results.push(value);
         cb();

@@ -3,7 +3,7 @@ const RESOLVING = 1;
 const RESOLVED_SUCCESS = 2;
 const RESOLVED_ERROR = 3;
 
-export type Callback<T> = (error?: Error, result?: T) => void;
+export type Callback<T> = (error?: Error | null, result?: T) => void;
 export type Resolver<T> = (callback: Callback<T>) => void;
 
 export default function resolveOnce<T>(fn: Resolver<T>): Resolver<T> {
@@ -15,7 +15,7 @@ export default function resolveOnce<T>(fn: Resolver<T>): Resolver<T> {
     if (state === RESOLVING) return;
     state = RESOLVING;
 
-    function callback(error?: Error, value?: T): void {
+    function callback(error?: Error | null, value?: T): void {
       if (state !== RESOLVING) return;
       if (error) {
         state = RESOLVED_ERROR;
