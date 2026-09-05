@@ -1,1 +1,1 @@
-ignores: ["node-version-use", "ts-dev-stack", "resolve-once-cb"]
+ignores: ["resolve-once-cb", "node-version-use", "ts-dev-stack"]
