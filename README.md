@@ -1,16 +1,22 @@
-## resolve-once-cb
+# resolve-once-cb
 
-Resolves a promise only once and memoizes the result.
+Run a callback-based operation once and memoize its result, including errors.
+
+```sh
+npm install resolve-once-cb
+```
 
 ## Usage
 
-```
-const { callbackify } = require('util');
+```js
 const resolveOnce = require('resolve-once-cb');
-const { MongoClient } = require('mongodb');
 
-const connection = resolveOnce((cb) => callbackify(MongoClient.connect)('mongodb://localhost:27017/database', cb) );
-connection((err, db1) => { })
-connection((err, db2) => { })
-// db1 === db2
+const resolveValue = resolveOnce((cb) => cb(null, { id: 1 }));
+resolveValue((err, value1) => {
+  if (err) throw err;
+  resolveValue((err, value2) => {
+    if (err) throw err;
+    console.log(value1 === value2); // true
+  });
+});
 ```
